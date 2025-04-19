@@ -19,8 +19,19 @@ const __dirname = path.dirname(__filename);
 // Create express app
 const app = express();
 
+// Add this instead right before your routes:
+const connectToDB = async () => {
+  try {
+    await dbConnect();
+    console.log("Database connected successfully");
+  } catch (error) {
+    console.error("Database connection error:", error);
+    process.exit(1);
+  }
+};
+
 // Connect to database
-const conn = await dbConnect();
+await connectToDB();
 
 // Middleware
 app.use(
