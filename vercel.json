@@ -8,19 +8,12 @@
   ],
   "routes": [
     {
-      "src": "/api/auth/(.*)",
+      "src": "/api/(.*)",
       "dest": "server.js"
     },
     {
-      "src": "/api/students/(.*)",
+      "src": "/health",
       "dest": "server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "server.js",
-      "headers": {
-        "Cache-Control": "s-maxage=0, stale-while-revalidate=60"
-      }
     }
   ]
 }

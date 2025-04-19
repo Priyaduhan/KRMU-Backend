@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
-import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
@@ -12,14 +11,10 @@ import dbConnect from "./config/mongo.js";
 // Load env vars
 dotenv.config();
 
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Create express app
 const app = express();
 
-// Add this instead right before your routes:
+// Database connection wrapper
 const connectToDB = async () => {
   try {
     await dbConnect();
@@ -51,32 +46,24 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-// Mount routers
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 
-// Serve static files in production (if deploying frontend with backend)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "healthy" });
+});
 
-  // Handle SPA routing
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
-  });
-}
-
-// Log errors for debugging
+// Error handling
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   next(err);
 });
-
-// Error handling middleware
 app.use(globalErrorHandler);
 
-// For Vercel deployment
+// Start server only in local development
 if (process.env.NODE_ENV !== "production") {
-  // Local server only
   const PORT = process.env.PORT || 5000;
   const server = app.listen(PORT, () => {
     console.log(
@@ -84,7 +71,6 @@ if (process.env.NODE_ENV !== "production") {
     );
   });
 
-  // Handle unhandled promise rejections
   process.on("unhandledRejection", (err, promise) => {
     console.log(`Error: ${err.message}`);
     server.close(() => process.exit(1));
