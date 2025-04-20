@@ -14,10 +14,7 @@ const router = express.Router();
 // Protect all routes
 router.use(protect);
 
-router
-  .route("/")
-  .post(authorize("counsellor"), createStudent)
-  .get(getAllStudents);
+router.route("/").post(createStudent).get(getAllStudents);
 
 router.get("/dashboard/stats", getDashboardStats);
 
