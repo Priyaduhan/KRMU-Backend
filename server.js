@@ -29,17 +29,25 @@ const connectToDB = async () => {
 await connectToDB();
 
 // Middleware
-
 app.use(
   cors({
-    origin: [
-      "https://krmu-enrollment.vercel.app/",
-      "http://localhost:3000", // For local development
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    origin: true, // Reflects the request origin
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// app.use(
+//   cors({
+//     origin: [
+//       "https://krmu-enrollment.vercel.app/",
+//       "http://localhost:3000", // For local development
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
