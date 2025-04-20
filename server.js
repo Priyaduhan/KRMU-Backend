@@ -29,17 +29,23 @@ const connectToDB = async () => {
 await connectToDB();
 
 // Middleware
+
 app.use(
   cors({
     origin: [
-      process.env.FRONTEND_URL,
+      "https://krmu-enrollment.vercel.app/",
       "http://localhost:3000", // For local development
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Add OPTIONS method to CORS preflight
+app.options("*", cors());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
