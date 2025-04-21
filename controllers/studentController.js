@@ -1,6 +1,10 @@
 import Student from "../models/Student.js";
 import User from "../models/User.js";
 import AppError from "../utils/errorHandler.js";
+import {
+  sendAcceptanceEmail,
+  sendRejectionEmail,
+} from "../utils/emailSender.js";
 
 // @desc    Create a new student
 // @route   POST /api/students
@@ -241,5 +245,53 @@ export const getDashboardStats = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const mailHandler = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const emailSent = await sendAcceptanceEmail(
+      student.email,
+      `${student.firstName} ${student.lastName}`
+    );
+
+    if (emailSent) {
+      student.status = "Pass";
+      await student.save();
+      return res.json({ message: "Acceptance email sent successfully" });
+    } else {
+      return res.status(500).json({ message: "Failed to send email" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const rejectMailHandler = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const emailSent = await sendRejectionEmail(
+      student.email,
+      `${student.firstName} ${student.lastName}`
+    );
+
+    if (emailSent) {
+      student.status = "Fail";
+      await student.save();
+      return res.json({ message: "Acceptance email sent successfully" });
+    } else {
+      return res.status(500).json({ message: "Failed to send email" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

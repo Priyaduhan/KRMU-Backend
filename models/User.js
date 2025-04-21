@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate: {
         validator: function (v) {
-          return /^[A-Za-z]+$/.test(v);
+          return /^[A-Za-z\s]+$/.test(v);
         },
         message: "Username must contain only alphabets",
       },

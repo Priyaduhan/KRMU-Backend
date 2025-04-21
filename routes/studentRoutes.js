@@ -6,6 +6,8 @@ import {
   updateStudent,
   deleteStudent,
   getDashboardStats,
+  mailHandler,
+  rejectMailHandler,
 } from "../controllers/studentController.js";
 import { protect, authorize } from "../middleware/auth.js";
 
@@ -23,5 +25,8 @@ router
   .get(getStudent)
   .patch(updateStudent)
   .delete(authorize("admin"), deleteStudent);
+
+router.post("/:id/send-acceptance", mailHandler);
+router.post("/:id/send-rejection", rejectMailHandler);
 
 export default router;
