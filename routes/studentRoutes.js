@@ -13,10 +13,14 @@ import { protect, authorize } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Protect all routes
+// Unprotected route - createStudent
+router.route("/").post(createStudent);
+
+// Protect all routes after this point
 router.use(protect);
 
-router.route("/").post(createStudent).get(getAllStudents);
+// Protected routes
+router.route("/").get(getAllStudents);
 
 router.get("/dashboard/stats", getDashboardStats);
 
