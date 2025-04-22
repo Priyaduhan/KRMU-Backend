@@ -104,6 +104,11 @@ const studentSchema = new mongoose.Schema(
       enum: ["Pending", "Pass", "Fail"],
       default: "Pending",
     },
+    emailStatus: {
+      type: String,
+      enum: ["Pending", "Added"],
+      default: "Pending",
+    },
     status: {
       type: String,
       enum: ["Pending", "Pass", "Fail"],

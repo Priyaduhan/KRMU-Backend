@@ -262,6 +262,7 @@ export const mailHandler = async (req, res) => {
 
     if (emailSent) {
       student.status = "Pass";
+      student.emailStatus = "Added";
       await student.save();
       return res.json({ message: "Acceptance email sent successfully" });
     } else {
@@ -286,6 +287,7 @@ export const rejectMailHandler = async (req, res) => {
 
     if (emailSent) {
       student.status = "Fail";
+      student.emailStatus = "Added";
       await student.save();
       return res.json({ message: "Acceptance email sent successfully" });
     } else {
